@@ -17,3 +17,8 @@ Create a compressed archive of the project without the `.git` directory:
 ```bash
 make release
 ```
+
+## Portal
+
+The `portal` directory contains a small React application. Build artifacts can be
+uploaded to the S3 bucket defined by `portal_bucket_name` for static hosting.

@@ -18,3 +18,8 @@ variable "database_url" {
   description = "Database connection string for the scorer"
   type        = string
 }
+
+variable "portal_bucket_name" {
+  description = "Name for the portal static site bucket"
+  type        = string
+}
