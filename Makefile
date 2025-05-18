@@ -15,6 +15,9 @@ test:
 	.venv/bin/pytest
 
 lint:
-	.venv/bin/ruff check
-	terraform fmt -check infra
-	terraform validate infra
+        .venv/bin/ruff check
+        terraform fmt -check infra
+        terraform validate infra
+
+release:
+	scripts/create_release_tarball.sh
