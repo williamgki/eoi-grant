@@ -1,7 +1,54 @@
+############################
+#  Python
+############################
 .venv/
 __pycache__/
 *.pyc
 *.log
-terraform.tfstate*
-.terraform/
 embeddings/
+
+############################
+#  Terraform / Terragrunt
+############################
+# local directories and caches
+.terraform/
+**/.terraform/*
+.terragrunt-cache/
+
+# state / plan / var files
+terraform.tfstate*
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfvars
+*.tfvars.json
+
+# override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# local RC files
+.terraformrc
+terraform.rc
+
+############################
+#  OS-generated cruft
+############################
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+############################
+#  Editor / IDE artefacts
+############################
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.iml
+*.sublime-workspace
+*.sublime-project
