@@ -14,3 +14,7 @@ output "db_endpoint" {
 output "ecs_cluster_arn" {
   value = aws_ecs_cluster.main.arn
 }
+
+output "portal_url" {
+  value = aws_s3_bucket_website_configuration.portal.website_endpoint
+}
