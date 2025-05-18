@@ -23,12 +23,9 @@ metadata.create_all(engine)
 
 sqs = boto3.client('sqs') if SQS_QUEUE_URL else None
 
-@click.command()
-@click.option('--file', 'file_path', required=True, type=click.Path(exists=True))
-def main(file_path: str) -> None:
-    """Load CSV rows into the database and notify SQS."""
-    df = pd.read_csv(file_path, parse_dates=['submitted_at'], dayfirst=True)
 
+def load_dataframe(df: pd.DataFrame) -> None:
+    """Load a ``pandas`` dataframe into the database and notify SQS."""
     with engine.begin() as conn:
         for _, row in df.iterrows():
             result = conn.execute(
@@ -39,7 +36,17 @@ def main(file_path: str) -> None:
             )
             pk = result.inserted_primary_key[0]
             if sqs:
-                sqs.send_message(QueueUrl=SQS_QUEUE_URL, MessageBody=json.dumps({'id': pk}))
+                sqs.send_message(
+                    QueueUrl=SQS_QUEUE_URL,
+                    MessageBody=json.dumps({'id': pk}),
+                )
+
+@click.command()
+@click.option('--file', 'file_path', required=True, type=click.Path(exists=True))
+def main(file_path: str) -> None:
+    """Load CSV rows into the database and notify SQS."""
+    df = pd.read_csv(file_path, parse_dates=['submitted_at'], dayfirst=True)
+    load_dataframe(df)
 
 if __name__ == '__main__':
     main()
