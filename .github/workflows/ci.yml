@@ -20,3 +20,8 @@ jobs:
       - run: .venv/bin/pytest
       - run: terraform fmt -check infra
       - run: terraform validate infra
+      - run: terraform plan -input=false infra
+        env:
+          TF_VAR_scorer_image: dummy
+          TF_VAR_openai_api_key_secret_id: dummy
+          TF_VAR_database_url: dummy
