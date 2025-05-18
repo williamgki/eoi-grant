@@ -27,6 +27,6 @@ resource "aws_rds_cluster" "eoi_app" {
 resource "aws_rds_cluster_instance" "eoi_app" {
   identifier         = "eoi-app-0"
   cluster_identifier = aws_rds_cluster.eoi_app.id
-  instance_class     = "db.serverless"
+  instance_class     = "db.t3.medium"
   engine             = aws_rds_cluster.eoi_app.engine
 }
