@@ -1,0 +1,8 @@
+click>=8.1
+boto3
+pandas
+sqlalchemy
+openai>=1.14.0
+faiss-cpu
+pytest
+ruff
