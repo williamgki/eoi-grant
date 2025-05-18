@@ -1,5 +1,12 @@
 resource "aws_ecs_cluster" "main" {
   name = "eoi-cluster"
+
+  capacity_providers = ["FARGATE", "FARGATE_SPOT"]
+
+  default_capacity_provider_strategy {
+    capacity_provider = "FARGATE"
+    weight            = 1
+  }
 }
 
 resource "aws_ecs_task_definition" "scorer" {
@@ -17,9 +24,11 @@ resource "aws_ecs_task_definition" "scorer" {
       image     = var.scorer_image
       essential = true
       environment = [
-        { name = "SQS_QUEUE_URL", value = aws_sqs_queue.ingest.url },
-        { name = "OPENAI_API_KEY", value = var.openai_api_key_secret_id },
-        { name = "DATABASE_URL", value = var.database_url }
+        { name = "SQS_QUEUE_URL", value = aws_sqs_queue.ingest.url }
+      ]
+      secrets = [
+        { name = "OPENAI_API_KEY", valueFrom = var.openai_api_key_secret_id },
+        { name = "DATABASE_URL", valueFrom = var.database_url }
       ]
       logConfiguration = {
         logDriver = "awslogs"

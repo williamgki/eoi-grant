@@ -6,7 +6,7 @@ variable "scorer_image" {
 variable "scorer_schedule" {
   description = "Cron or rate expression for running the scorer"
   type        = string
-  default     = "rate(5 minutes)"
+  default     = "rate(2 minutes)"
 }
 
 variable "openai_api_key_secret_id" {
