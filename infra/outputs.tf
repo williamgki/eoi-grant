@@ -10,3 +10,7 @@ output "queue_url" {
 output "db_endpoint" {
   value = local.db_endpoint
 }
+
+output "ecs_cluster_arn" {
+  value = aws_ecs_cluster.main.arn
+}

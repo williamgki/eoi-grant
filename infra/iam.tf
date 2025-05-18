@@ -36,3 +36,37 @@ resource "aws_iam_role_policy" "task_execution" {
     ]
   })
 }
+
+data "aws_iam_policy_document" "events" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["events.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "events" {
+  name               = "eoi-events"
+  assume_role_policy = data.aws_iam_policy_document.events.json
+}
+
+resource "aws_iam_role_policy" "events" {
+  role   = aws_iam_role.events.id
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect   = "Allow",
+        Action   = ["ecs:RunTask"],
+        Resource = aws_ecs_task_definition.scorer.arn
+      },
+      {
+        Effect   = "Allow",
+        Action   = ["iam:PassRole"],
+        Resource = aws_iam_role.task_execution.arn
+      }
+    ]
+  })
+}
