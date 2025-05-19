@@ -23,3 +23,8 @@ variable "portal_bucket_name" {
   description = "Name for the portal static site bucket"
   type        = string
 }
+
+variable "log_export_bucket" {
+  description = "S3 bucket name for exporting CloudWatch logs"
+  type        = string
+}
