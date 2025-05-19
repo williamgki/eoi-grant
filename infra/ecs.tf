@@ -24,10 +24,10 @@ resource "aws_ecs_task_definition" "scorer" {
       image     = var.scorer_image
       essential = true
       environment = [
-        { name = "SQS_QUEUE_URL", value = aws_sqs_queue.ingest.url }
+        { name = "SQS_QUEUE_URL", value = aws_sqs_queue.ingest.url },
+        { name = "OPENAI_SECRET_ID", value = var.openai_api_key_secret_id }
       ]
       secrets = [
-        { name = "OPENAI_API_KEY", valueFrom = var.openai_api_key_secret_id },
         { name = "DATABASE_URL", valueFrom = var.database_url }
       ]
       logConfiguration = {

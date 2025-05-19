@@ -14,7 +14,7 @@ def test_handle_processes_message(tmp_path, monkeypatch):
     monkeypatch.setenv('AGENDAS_PATH', str(agenda_path))
     monkeypatch.setenv('DATABASE_URL', f'sqlite:///{tmp_path}/db.sqlite')
     monkeypatch.setenv('SQS_QUEUE_URL', 'qurl')
-    monkeypatch.setenv('OPENAI_API_KEY', 'secret-id')
+    monkeypatch.setenv('OPENAI_SECRET_ID', 'secret-id')
 
     class DummySQS:
         def __init__(self):
