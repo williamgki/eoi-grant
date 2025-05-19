@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import getpass
 
 import boto3
 import openai
@@ -14,7 +15,9 @@ QUEUE_URL = os.environ['SQS_QUEUE_URL']
 AGENDAS_PATH = os.getenv('AGENDAS_PATH', 'knowledge/research_agenda.md')
 
 secrets = boto3.client('secretsmanager')
-openai.api_key = secrets.get_secret_value(SecretId=os.environ['OPENAI_API_KEY'])['SecretString']
+default_secret_id = f"users/{getpass.getuser()}/openai_api_key"
+secret_id = os.getenv('OPENAI_SECRET_ID', default_secret_id)
+openai.api_key = secrets.get_secret_value(SecretId=secret_id)['SecretString']
 
 sqs = boto3.client('sqs')
 engine = sa.create_engine(DATABASE_URL)
