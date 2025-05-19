@@ -5,6 +5,7 @@ import os
 import boto3
 import openai
 import sqlalchemy as sa
+import time
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -94,15 +95,19 @@ def process_message(msg: dict) -> None:
 
 def handle() -> None:
     while True:
-        msgs = sqs.receive_message(
-            QueueUrl=QUEUE_URL,
-            MaxNumberOfMessages=1,
-            WaitTimeSeconds=20,
-        )
-        if 'Messages' not in msgs:
-            continue
-        for msg in msgs['Messages']:
-            process_message(msg)
+        try:
+            msgs = sqs.receive_message(
+                QueueUrl=QUEUE_URL,
+                MaxNumberOfMessages=1,
+                WaitTimeSeconds=20,
+            )
+            if 'Messages' not in msgs:
+                continue
+            for msg in msgs['Messages']:
+                process_message(msg)
+        except Exception as exc:  # pragma: no cover - logging only
+            logger.exception('Receive/process failed: %s', exc)
+            time.sleep(5)
 
 
 if __name__ == '__main__':
