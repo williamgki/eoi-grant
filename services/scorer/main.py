@@ -49,7 +49,25 @@ def process_message(msg: dict) -> None:
         return
 
     agenda = load_agenda()
-    prompt = f"Agenda:\n{agenda}\n\nEntry:\n{row['data']}"
+
+    prompt = f"""
+    You are evaluating Expressions of Interest (EOIs) for a safety-research grant.
+    
+    Agenda summary:
+    {agenda}
+    
+    EOI submission (JSON):
+    {row['data']}
+    
+    Task 1 – Decide the best next step  
+     • review_research_areas  – applicant is mis-aligned with our agenda  
+     • request_more_detail    – idea seems promising but vague  
+     • challenge_fund         – idea fits and is detailed  
+    
+    Task 2 – For **each** path, write a polite email draft in the style of the examples below.  
+    Return a JSON object with keys:  
+      recommended_path, drafts.challenge_fund, drafts.request_more_detail, drafts.review_research_areas
+    """
 
     try:
         resp = openai.ChatCompletion.create(
