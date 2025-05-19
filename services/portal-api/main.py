@@ -1,11 +1,17 @@
+import io
 import os
 
 import sqlalchemy as sa
-from fastapi import FastAPI, HTTPException
+import pandas as pd
+from fastapi import FastAPI, HTTPException, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+import scripts.csv_loader as csv_loader
+
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///portal.db")
+UPLOAD_DIR = os.getenv("UPLOAD_DIR", "uploads")
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 engine = sa.create_engine(DATABASE_URL)
 metadata = sa.MetaData()
 
@@ -37,6 +43,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.post("/upload")
+async def upload_csv(file: UploadFile = File(...)) -> dict[str, bool]:
+    """Store an uploaded CSV file and load its rows."""
+    dest_path = os.path.join(UPLOAD_DIR, file.filename)
+    data = await file.read()
+    with open(dest_path, "wb") as f:
+        f.write(data)
+    df = pd.read_csv(io.BytesIO(data), parse_dates=["submitted_at"], dayfirst=True)
+    csv_loader.load_dataframe(df)
+    return {"ok": True}
 
 
 @app.post("/drafts", response_model=Draft)
